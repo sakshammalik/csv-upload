@@ -1,0 +1,55 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}
+Product List
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 id="heading">Products</h1>
+    <input id="searchInput"
+           name="search"
+           placeholder="Search Here"
+           autocomplete="off"
+           autofocus="autofocus"
+           type="text">
+    <button id="searchButton">Search</button>
+    <div id="productList" class="container-fluid">
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{super()}}
+<script>
+$(document).ready(function () {
+    $('#searchButton').click(function() {
+        var text = $('#searchInput').val();
+        $.ajax({
+            method: 'POST',
+            url: '{{ url_for('search') }}',
+            dataType: 'json',
+            data: JSON.stringify({text: text}),
+            contentType: 'application/json; charset=utf-8',
+            success: function(resp) {
+                clearInterval(productInterval);
+                $('#productList').empty();
+                $('#productList').append(resp.data);
+            }
+        });
+    });
+    function getProducts() {
+      $.ajax({
+        method: 'GET',
+        url: '{{ url_for('get_all_products') }}',
+        success: function(resp) {
+            $('#productList').empty();
+            $('#productList').append(resp.data);
+        }
+      });
+    }
+    var productInterval = setInterval(function() {
+        getProducts();
+    }, 5000);
+    getProducts();
+ });
+</script>
+{% endblock %}

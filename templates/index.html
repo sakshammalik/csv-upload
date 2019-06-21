@@ -1,0 +1,47 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}
+Acme Inc.
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <h1 id="heading">Upload CSV</h1>
+</div>
+{% for product in products %}
+<span>{{ product.name }}</span>
+{% endfor %}
+<form method="POST" action="/" enctype="multipart/form-data">
+    <div class="form-group">
+        <input class="form-control" id="fileInput" type='file' name='inputFile' accept=".csv" >
+    </div>
+    <button id="uploadButton" type="submit" class="btn btn-default">
+        Upload
+    </button>
+</form>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<!--<script src="{{ url_for('static', filename='app.js') }}"></script>-->
+<!--<script>-->
+    <!--$('#uploadButton').click(function() {-->
+
+        <!--var file = $('#fileInput')[0].files[0];-->
+        <!--var form_data = new FormData();-->
+        <!--form_data['file'] = file;-->
+        <!--$('#heading').fadeOut(500).fadeIn(500);-->
+        <!--console.log('file', form_data)-->
+
+        <!--var req = $.ajax({-->
+            <!--url: '/upload',-->
+            <!--type: 'POST',-->
+            <!--data: form_data,-->
+            <!--cache: false-->
+        <!--});-->
+
+        <!--req.done(function(res) {-->
+            <!--console.log(res);-->
+        <!--});-->
+    <!--});-->
+<!--</script>-->
+{% endblock %}
