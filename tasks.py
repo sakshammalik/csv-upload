@@ -7,9 +7,11 @@ import random
 
 celery = Celery(
     'tasks',
+    # Need to use celery config to get this URL
     broker='amqp://admin:saksham007@localhost:5672/vhost'
 )
 
+# Need to use app config to get the database URL
 engine = create_engine('postgresql:///products')
 Session = sessionmaker()
 Session.configure(bind=engine)

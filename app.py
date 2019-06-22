@@ -25,6 +25,7 @@ def upload(file):
     stream = io.StringIO(file.stream.read().decode('UTF8'), newline=None)
     csv_dict = csv.DictReader(stream, delimiter=",")
     products = list(csv_dict)
+    # Celery task
     tasks.upload_file.delay(products)
     return {'result': 'uploading'}
 
