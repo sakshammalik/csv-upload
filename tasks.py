@@ -3,6 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 import models
+import random
 
 celery = Celery(
     'tasks',
@@ -17,9 +18,11 @@ session = Session()
 
 @celery.task()
 def upload_file(products):
+    statuses = ['active', 'inactive']
     for product in products:
+        status = random.choice(statuses)
         prod = models.Product(sku=product['sku'], name=product['name'],
-                              description=product['description'], status='active')
+                              description=product['description'], status=status)
         session.merge(prod)
         session.commit()
     return 'success'

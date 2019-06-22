@@ -38,14 +38,17 @@ def get_products():
 def search():
     data = json.loads(request.data.decode('utf8'))
     search_term = data['text']
-    if search_term:
+    status = data['status']
+    if search_term and status:
         all_products = db.session.query(models.Product)\
-            .filter(models.Product.name.ilike('%'+search_term+'%')).all()
+            .filter(models.Product.name.ilike('%'+search_term+'%'),
+                    models.Product.status == status).all()
         return jsonify({'result': 'success',
                         'is_search': True,
                         'data': render_template('list.html', products=all_products)})
     else:
-        all_products = db.session.query(models.Product).all()
+        all_products = db.session.query(models.Product)\
+            .filter(models.Product.status == status).all()
         return jsonify({'result': 'success',
                         'is_search': False,
                         'data': render_template('list.html', products=all_products)})
@@ -53,7 +56,10 @@ def search():
 
 @app.route('/get_all_products', methods=['GET', 'POST'])
 def get_all_products():
-    all_products = db.session.query(models.Product).all()
+    data = json.loads(request.data.decode('utf8'))
+    status = data['status']
+    all_products = db.session.query(models.Product) \
+        .filter(models.Product.status == status).all()
     return jsonify({'result': 'success',
                     'data': render_template('list.html', products=all_products)})
 

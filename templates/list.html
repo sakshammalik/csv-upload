@@ -1,5 +1,16 @@
-<ul>
-{% for product in products %}
-    <li>{{ product.name }}</li>
-{% endfor %}
-</ul>
+<table>
+    <thead>
+    <tr>
+       <td><b>Name</b></td>
+        <td><b>Description</b></td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for product in products %}
+        <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.description }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -2,9 +2,19 @@
 {% block title %}
 Product List
 {% endblock %}
-
 {% block content %}
-<div class="container-fluid">
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">Acme Inc.</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li><a href="/">Home</a></li>
+      <li><a href="/products">Products</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="container-fluid" style="margin-top:50px">
     <h1 id="heading">Products</h1>
     <input id="searchInput"
            name="search"
@@ -12,7 +22,10 @@ Product List
            autocomplete="off"
            autofocus="autofocus"
            type="text">
-    <button id="searchButton">Search</button>
+    <button id="searchButton" class="btn btn-primary">Search</button>
+    <b style="margin-left: 48px;">Filter by Product Status: </b>
+    <input class="filterByStatusButton" type="radio" name="productStatus" value="active" checked> Active
+    <input class="filterByStatusButton" type="radio" name="productStatus" value="inactive"> Inactive
     <div id="productList" class="container-fluid">
     </div>
 </div>
@@ -21,34 +34,51 @@ Product List
 {{super()}}
 <script>
 $(document).ready(function () {
-    $('#searchButton').click(function() {
+    $("input[name='productStatus']").click(function() {
         var text = $('#searchInput').val();
+        var status = $("input[name='productStatus']:checked").val();
         $.ajax({
             method: 'POST',
             url: '{{ url_for('search') }}',
             dataType: 'json',
-            data: JSON.stringify({text: text}),
+            data: JSON.stringify({text: text, status: status}),
             contentType: 'application/json; charset=utf-8',
             success: function(resp) {
-                clearInterval(productInterval);
+                $('#productList').empty();
+                $('#productList').append(resp.data);
+            }
+        });
+    });
+
+    $('#searchButton').click(function() {
+        var text = $('#searchInput').val();
+        var status = $("input[name='productStatus']:checked").val();
+        $.ajax({
+            method: 'POST',
+            url: '{{ url_for('search') }}',
+            dataType: 'json',
+            data: JSON.stringify({text: text, status: status}),
+            contentType: 'application/json; charset=utf-8',
+            success: function(resp) {
                 $('#productList').empty();
                 $('#productList').append(resp.data);
             }
         });
     });
     function getProducts() {
+      var status = $("input[name='productStatus']:checked").val();
       $.ajax({
-        method: 'GET',
+        method: 'POST',
         url: '{{ url_for('get_all_products') }}',
+        dataType: 'json',
+        data: JSON.stringify({status: status}),
+        contentType: 'application/json; charset=utf-8',
         success: function(resp) {
             $('#productList').empty();
             $('#productList').append(resp.data);
         }
       });
     }
-    var productInterval = setInterval(function() {
-        getProducts();
-    }, 5000);
     getProducts();
  });
 </script>
